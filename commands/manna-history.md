@@ -6,9 +6,12 @@ allowed-tools: Read, Bash(*)
 
 You are showing Manna Ray run history.
 
+The user's optional filter argument is: $1
+
 ## Load history
 
-!`bash -c '
+Run this bash command:
+```bash
 export CLAUDE_PROJECT_DIR="$(pwd)"
 
 sf="${CLAUDE_PROJECT_DIR}/.manna-ray/state.json"
@@ -19,10 +22,10 @@ fi
 
 if [ -n "$1" ] && [ "$1" != "" ]; then
   echo "=== History for: $1 ==="
-  jq -r ".history | map(select(.skill == \"$1\")) | reverse | .[] | \"  \(.ranAt | split(\"T\")[0]) → \(.output)\"" "$sf"
+  jq -r ".history | map(select(.skill == \"$1\")) | reverse | .[] | \"  \(.ranAt | split(\"T\")[0]) -> \(.output)\"" "$sf"
 else
   echo "=== Full Run History ==="
-  jq -r ".history | reverse | .[] | \"  [\(.ranAt | split(\"T\")[0])] \(.skill) → \(.output)\"" "$sf"
+  jq -r ".history | reverse | .[] | \"  [\(.ranAt | split(\"T\")[0])] \(.skill) -> \(.output)\"" "$sf"
 fi
 
 echo ""
@@ -36,10 +39,11 @@ for dir in discovery strategy specs analytics launch productivity; do
     done
   fi
 done
-' -- $1`
+```
+Replace $1 with the user's filter argument if provided.
 
 If NOT_INITIALIZED, tell the user: "This is not a Manna Ray project. Run `/manna-init` to get started."
 
 Otherwise, present the history in a clean, readable format.
-- If the user provided a skill name ($1), filter to show only runs of that skill.
+- If the user provided a skill name, filter to show only runs of that skill.
 - Also show the output file listing so the user can see what artifacts exist.

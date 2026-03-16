@@ -4,33 +4,38 @@ argument-hint: [start|next|skip|cancel|restart|status|list] [workflow-name]
 allowed-tools: Read, Write, Edit, Bash(*), Glob, Grep
 ---
 
-You are managing Manna Ray workflows. The subcommand is: $1
+You are managing Manna Ray workflows. The user's subcommand is: $1
+The user's second argument (if any) is: $2
+
+Based on $1, follow ONLY the matching subcommand section below. Do NOT execute bash blocks from other sections.
 
 ## Subcommand: list
 
-If $1 is "list":
-!`bash -c '
+If $1 is "list", run this bash command:
+```bash
 export CLAUDE_PROJECT_DIR="$(pwd)"
 export CLAUDE_PLUGIN_ROOT="${CLAUDE_PLUGIN_ROOT}"
 source ${CLAUDE_PLUGIN_ROOT}/scripts/state.sh
 source ${CLAUDE_PLUGIN_ROOT}/scripts/context.sh
 source ${CLAUDE_PLUGIN_ROOT}/scripts/workflow.sh
 workflow_list
-'`
+```
+Display the results as a formatted list of available workflows.
 
 ## Subcommand: start
 
 If $1 is "start" and $2 is a workflow name:
 
-1. Start the workflow:
-!`bash -c '
+1. Start the workflow by running:
+```bash
 export CLAUDE_PROJECT_DIR="$(pwd)"
 export CLAUDE_PLUGIN_ROOT="${CLAUDE_PLUGIN_ROOT}"
 source ${CLAUDE_PLUGIN_ROOT}/scripts/state.sh
 source ${CLAUDE_PLUGIN_ROOT}/scripts/context.sh
 source ${CLAUDE_PLUGIN_ROOT}/scripts/workflow.sh
-workflow_start "$1"
-' -- $2`
+workflow_start "$2"
+```
+Replace $2 with the actual workflow name the user provided.
 
 2. If successful, display the workflow steps and announce you're starting step 1.
 3. Get the first step's skill and context requirements from the workflow YAML:
@@ -41,8 +46,8 @@ workflow_start "$1"
 
 If $1 is "next":
 
-1. Find active workflow:
-!`bash -c '
+1. Find active workflow by running:
+```bash
 export CLAUDE_PROJECT_DIR="$(pwd)"
 export CLAUDE_PLUGIN_ROOT="${CLAUDE_PLUGIN_ROOT}"
 source ${CLAUDE_PLUGIN_ROOT}/scripts/state.sh
@@ -58,7 +63,7 @@ else
   prev=$(workflow_get_previous_output "$active")
   echo "PREV:$prev"
 fi
-'`
+```
 
 2. If NO_ACTIVE, tell user: "No active workflow. Start one with `/manna-workflow start [name]`."
 3. Otherwise, load the current step's skill definition and execute it.
@@ -77,7 +82,7 @@ fi
 ## Subcommand: skip
 
 If $1 is "skip":
-1. Find active workflow
+1. Find active workflow (same bash as "next" step 1)
 2. Skip the current step by running:
    ```bash
    export CLAUDE_PROJECT_DIR="$(pwd)"; export CLAUDE_PLUGIN_ROOT="${CLAUDE_PLUGIN_ROOT}"; source ${CLAUDE_PLUGIN_ROOT}/scripts/state.sh && state_workflow_skip "WORKFLOW_NAME"
@@ -88,7 +93,7 @@ If $1 is "skip":
 ## Subcommand: cancel
 
 If $1 is "cancel":
-1. Find active workflow
+1. Find active workflow (same bash as "next" step 1)
 2. Cancel it by running:
    ```bash
    export CLAUDE_PROJECT_DIR="$(pwd)"; export CLAUDE_PLUGIN_ROOT="${CLAUDE_PLUGIN_ROOT}"; source ${CLAUDE_PLUGIN_ROOT}/scripts/state.sh && state_workflow_cancel "WORKFLOW_NAME"
@@ -99,13 +104,13 @@ If $1 is "cancel":
 ## Subcommand: restart
 
 If $1 is "restart" and $2 is a workflow name:
-1. Cancel any active workflow first
-2. Then start the specified workflow fresh (same as "start")
+1. Cancel any active workflow first (same as "cancel" flow)
+2. Then start the specified workflow fresh (same as "start" flow with $2)
 
 ## Subcommand: status
 
-If $1 is "status":
-!`bash -c '
+If $1 is "status", run this bash command:
+```bash
 export CLAUDE_PROJECT_DIR="$(pwd)"
 export CLAUDE_PLUGIN_ROOT="${CLAUDE_PLUGIN_ROOT}"
 source ${CLAUDE_PLUGIN_ROOT}/scripts/state.sh
@@ -121,7 +126,7 @@ echo "Started: $(jq -r ".workflows[\"$active\"].startedAt" "$sf")"
 echo ""
 echo "Steps:"
 jq -r ".workflows[\"$active\"].steps | to_entries[] | \"  \(.key + 1). [\(.value.status)] \(.value.skill)\(if .value.output then \" → \" + .value.output else \"\" end)\"" "$sf"
-'`
+```
 
 ## Subcommand: missing
 

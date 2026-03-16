@@ -7,7 +7,8 @@ You are showing the Manna Ray project dashboard.
 
 ## Load project state
 
-!`bash -c '
+Run this bash command to gather dashboard data:
+```bash
 export CLAUDE_PROJECT_DIR="$(pwd)"
 source ${CLAUDE_PLUGIN_ROOT}/scripts/state.sh
 source ${CLAUDE_PLUGIN_ROOT}/scripts/context.sh
@@ -25,23 +26,23 @@ echo "=== Context Health ==="
 for f in product.md company.md personas.md competitors.md goals.md; do
   exists=$(context_check_exists "$f")
   if [ "$exists" = "missing" ]; then
-    echo "  ✗ $f — MISSING"
+    echo "  X $f — MISSING"
   elif [ "$exists" = "empty" ]; then
-    echo "  ⚠ $f — EMPTY"
+    echo "  ! $f — EMPTY"
   else
     staleness=$(context_check_staleness "$f")
     last=$(jq -r ".context[\"$f\"].lastModified // \"unknown\"" "$sf")
     if [ "$staleness" = "stale" ]; then
-      echo "  ⚠ $f — STALE (last: $last)"
+      echo "  ! $f — STALE (last: $last)"
     else
-      echo "  ✓ $f — current (last: $last)"
+      echo "  OK $f — current (last: $last)"
     fi
   fi
 done
 
 echo ""
 echo "=== Active Workflow ==="
-active=$(jq -r "[.workflows | to_entries[] | select(.value.status == \"in_progress\")] | first // empty | .key" "$sf" 2>/dev/null)
+active=$(jq -r '[.workflows | to_entries[] | select(.value.status == "in_progress")] | .[0].key // empty' "$sf" 2>/dev/null)
 if [ -n "$active" ] && [ "$active" != "null" ]; then
   step=$(jq -r ".workflows[\"$active\"].currentStep" "$sf")
   total=$(jq -r ".workflows[\"$active\"].steps | length" "$sf")
@@ -54,8 +55,8 @@ fi
 
 echo ""
 echo "=== Recent Runs (last 5) ==="
-jq -r ".history | reverse | .[0:5] | .[] | \"  • \(.skill) (\(.ranAt | split(\"T\")[0])) → \(.output)\"" "$sf" 2>/dev/null || echo "  (none)"
-'`
+jq -r '.history | reverse | .[0:5] | .[] | "  \(.skill) (\(.ranAt | split("T")[0])) -> \(.output)"' "$sf" 2>/dev/null || echo "  (none)"
+```
 
 If NOT_INITIALIZED, tell the user: "This is not a Manna Ray project. Run `/manna-init` to get started."
 

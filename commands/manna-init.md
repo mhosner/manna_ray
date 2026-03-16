@@ -7,7 +7,10 @@ You are initializing a new Manna Ray product management project.
 
 ## Step 1: Check if already initialized
 
-Check status: !`test -f ".manna-ray/state.json" && echo "EXISTS" || echo "NEW"`
+Run this to check status:
+```bash
+test -f ".manna-ray/state.json" && echo "EXISTS" || echo "NEW"
+```
 
 If the project is already initialized, warn the user and ask if they want to reinitialize (this will reset workflow state but preserve context files and outputs).
 
@@ -41,10 +44,16 @@ Only copy if the file doesn't already exist (preserve existing context files).
 
 ## Step 5: Initialize state
 
-Initialize state: !`bash -c 'export CLAUDE_PROJECT_DIR="$(pwd)"; source ${CLAUDE_PLUGIN_ROOT}/scripts/state.sh && state_init "$1"' -- $ARGUMENTS`
+Initialize state by running:
+```bash
+export CLAUDE_PROJECT_DIR="$(pwd)"; source ${CLAUDE_PLUGIN_ROOT}/scripts/state.sh && state_init "PROJECT_NAME"
+```
+Replace PROJECT_NAME with the name the user provided in Step 2.
 
 Then update checksums for any existing context files:
-!`bash -c 'export CLAUDE_PROJECT_DIR="$(pwd)"; source ${CLAUDE_PLUGIN_ROOT}/scripts/state.sh; for f in product.md company.md personas.md competitors.md goals.md; do state_update_context "$f"; done'`
+```bash
+export CLAUDE_PROJECT_DIR="$(pwd)"; source ${CLAUDE_PLUGIN_ROOT}/scripts/state.sh; for f in product.md company.md personas.md competitors.md goals.md; do state_update_context "$f"; done
+```
 
 ## Step 6: Generate CLAUDE.md
 
@@ -57,7 +66,10 @@ Write this to the project root as `CLAUDE.md`. If a CLAUDE.md already exists, ap
 
 Now guide the user through populating their context files. Start with `context/product.md` — ask them about their product, and help them fill in each section. Move through the files one at a time, but let the user skip any they're not ready to fill.
 
-After each file is populated, update its checksum:
-!`bash -c 'export CLAUDE_PROJECT_DIR="$(pwd)"; source ${CLAUDE_PLUGIN_ROOT}/scripts/state.sh && state_update_context "$1"' -- [filename]`
+After each file is populated, update its checksum by running:
+```bash
+export CLAUDE_PROJECT_DIR="$(pwd)"; source ${CLAUDE_PLUGIN_ROOT}/scripts/state.sh && state_update_context "FILENAME"
+```
+Replace FILENAME with the context file that was just updated (e.g., "product.md").
 
 Tell the user: "Project initialized! Use /manna-status to see your project dashboard."
