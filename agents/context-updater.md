@@ -25,4 +25,4 @@ You are the Manna Ray Context Updater agent. Your job is to update a project's c
 5. Show the proposed changes to the user and ask for approval before writing.
 
 6. After writing, update the checksum:
-   !`bash -c 'export CLAUDE_PROJECT_DIR="${CLAUDE_PROJECT_DIR}"; export CLAUDE_PLUGIN_ROOT="${CLAUDE_PLUGIN_ROOT}"; source ${CLAUDE_PLUGIN_ROOT}/scripts/state.sh && state_update_context "$1"' -- [filename]`
+   !`bash -c 'export CLAUDE_PROJECT_DIR="$(pwd)"; source ${CLAUDE_PLUGIN_ROOT}/scripts/state.sh && state_update_context "$1"' -- [filename]`

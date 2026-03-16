@@ -40,15 +40,14 @@ Extract the frontmatter fields from the `metadata:` block: `mode`, `required_con
 
 ## Step 3: Load project state
 
-!`cat "${CLAUDE_PROJECT_DIR}/.manna-ray/state.json" 2>/dev/null || echo '{"context":{},"workflows":{},"history":[]}'`
+!`cat ".manna-ray/state.json" 2>/dev/null || echo '{"context":{},"workflows":{},"history":[]}'`
 
 ## Step 4: Context dependency check
 
 For each file listed in the skill's `metadata.required_context` frontmatter, check existence.
 <!-- Claude: read the required_context list from the skill's metadata frontmatter, then substitute the actual filenames into this bash call -->
 !`bash -c '
-export CLAUDE_PROJECT_DIR="${CLAUDE_PROJECT_DIR}"
-export CLAUDE_PLUGIN_ROOT="${CLAUDE_PLUGIN_ROOT}"
+export CLAUDE_PROJECT_DIR="$(pwd)"
 source ${CLAUDE_PLUGIN_ROOT}/scripts/state.sh
 source ${CLAUDE_PLUGIN_ROOT}/scripts/context.sh
 context_validate_required $@
@@ -60,8 +59,7 @@ If any required files are missing, inform the user and ask if they want to conti
 
 For each required context file, check staleness:
 !`bash -c '
-export CLAUDE_PROJECT_DIR="${CLAUDE_PROJECT_DIR}"
-export CLAUDE_PLUGIN_ROOT="${CLAUDE_PLUGIN_ROOT}"
+export CLAUDE_PROJECT_DIR="$(pwd)"
 source ${CLAUDE_PLUGIN_ROOT}/scripts/state.sh
 source ${CLAUDE_PLUGIN_ROOT}/scripts/context.sh
 for f in $@; do
@@ -73,8 +71,7 @@ done
 ## Step 6: Context size check
 
 !`bash -c '
-export CLAUDE_PROJECT_DIR="${CLAUDE_PROJECT_DIR}"
-export CLAUDE_PLUGIN_ROOT="${CLAUDE_PLUGIN_ROOT}"
+export CLAUDE_PROJECT_DIR="$(pwd)"
 source ${CLAUDE_PLUGIN_ROOT}/scripts/state.sh
 source ${CLAUDE_PLUGIN_ROOT}/scripts/context.sh
 context_check_size_warning $@
@@ -82,8 +79,7 @@ context_check_size_warning $@
 
 ## Step 7: Inject context and execute skill
 
-Read each required context file and present them as context:
-For each file in required_context, read: @${CLAUDE_PROJECT_DIR}/context/[filename]
+Read each required context file from the project's `context/` directory and present them as context.
 
 Now execute the skill using its SKILL.md instructions with:
 - The loaded context
@@ -98,7 +94,7 @@ Ask the user for a short slug describing this analysis, or generate one from the
 Ensure no file conflicts — if the path already exists, append a numeric suffix.
 
 Update state with the run record:
-!`bash -c 'export CLAUDE_PROJECT_DIR="${CLAUDE_PROJECT_DIR}"; export CLAUDE_PLUGIN_ROOT="${CLAUDE_PLUGIN_ROOT}"; source ${CLAUDE_PLUGIN_ROOT}/scripts/state.sh && state_add_run "$1" "$2"' -- [skill-name] [output-path]`
+!`bash -c 'export CLAUDE_PROJECT_DIR="$(pwd)"; source ${CLAUDE_PLUGIN_ROOT}/scripts/state.sh && state_add_run "$1" "$2"' -- [skill-name] [output-path]`
 
 ## Step 9: Suggest context updates
 

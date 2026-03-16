@@ -10,7 +10,7 @@ You are managing Manna Ray workflows. The subcommand is: $1
 
 If $1 is "list":
 !`bash -c '
-export CLAUDE_PROJECT_DIR="${CLAUDE_PROJECT_DIR}"
+export CLAUDE_PROJECT_DIR="$(pwd)"
 export CLAUDE_PLUGIN_ROOT="${CLAUDE_PLUGIN_ROOT}"
 source ${CLAUDE_PLUGIN_ROOT}/scripts/state.sh
 source ${CLAUDE_PLUGIN_ROOT}/scripts/context.sh
@@ -24,7 +24,7 @@ If $1 is "start" and $2 is a workflow name:
 
 1. Start the workflow:
 !`bash -c '
-export CLAUDE_PROJECT_DIR="${CLAUDE_PROJECT_DIR}"
+export CLAUDE_PROJECT_DIR="$(pwd)"
 export CLAUDE_PLUGIN_ROOT="${CLAUDE_PLUGIN_ROOT}"
 source ${CLAUDE_PLUGIN_ROOT}/scripts/state.sh
 source ${CLAUDE_PLUGIN_ROOT}/scripts/context.sh
@@ -43,7 +43,7 @@ If $1 is "next":
 
 1. Find active workflow:
 !`bash -c '
-export CLAUDE_PROJECT_DIR="${CLAUDE_PROJECT_DIR}"
+export CLAUDE_PROJECT_DIR="$(pwd)"
 export CLAUDE_PLUGIN_ROOT="${CLAUDE_PLUGIN_ROOT}"
 source ${CLAUDE_PLUGIN_ROOT}/scripts/state.sh
 source ${CLAUDE_PLUGIN_ROOT}/scripts/context.sh
@@ -64,16 +64,16 @@ fi
 3. Otherwise, load the current step's skill definition and execute it.
 4. If there's a previous step output (PREV), load it as additional context for this step.
 5. After skill completes and output is saved, advance the workflow:
-   !`bash -c 'export CLAUDE_PROJECT_DIR="${CLAUDE_PROJECT_DIR}"; export CLAUDE_PLUGIN_ROOT="${CLAUDE_PLUGIN_ROOT}"; source ${CLAUDE_PLUGIN_ROOT}/scripts/state.sh && state_workflow_advance "$1" "$2"' -- [workflow-name] [output-path]`
+   !`bash -c 'export CLAUDE_PROJECT_DIR="$(pwd)"; export CLAUDE_PLUGIN_ROOT="${CLAUDE_PLUGIN_ROOT}"; source ${CLAUDE_PLUGIN_ROOT}/scripts/state.sh && state_workflow_advance "$1" "$2"' -- [workflow-name] [output-path]`
 6. Update run history too:
-   !`bash -c 'export CLAUDE_PROJECT_DIR="${CLAUDE_PROJECT_DIR}"; export CLAUDE_PLUGIN_ROOT="${CLAUDE_PLUGIN_ROOT}"; source ${CLAUDE_PLUGIN_ROOT}/scripts/state.sh && state_add_run "$1" "$2"' -- [skill-name] [output-path]`
+   !`bash -c 'export CLAUDE_PROJECT_DIR="$(pwd)"; export CLAUDE_PLUGIN_ROOT="${CLAUDE_PLUGIN_ROOT}"; source ${CLAUDE_PLUGIN_ROOT}/scripts/state.sh && state_add_run "$1" "$2"' -- [skill-name] [output-path]`
 
 ## Subcommand: skip
 
 If $1 is "skip":
 1. Find active workflow
 2. Skip the current step:
-   !`bash -c 'export CLAUDE_PROJECT_DIR="${CLAUDE_PROJECT_DIR}"; export CLAUDE_PLUGIN_ROOT="${CLAUDE_PLUGIN_ROOT}"; source ${CLAUDE_PLUGIN_ROOT}/scripts/state.sh && state_workflow_skip "$1"' -- [workflow-name]`
+   !`bash -c 'export CLAUDE_PROJECT_DIR="$(pwd)"; export CLAUDE_PLUGIN_ROOT="${CLAUDE_PLUGIN_ROOT}"; source ${CLAUDE_PLUGIN_ROOT}/scripts/state.sh && state_workflow_skip "$1"' -- [workflow-name]`
 3. Show what was skipped and what's next.
 
 ## Subcommand: cancel
@@ -81,7 +81,7 @@ If $1 is "skip":
 If $1 is "cancel":
 1. Find active workflow
 2. Cancel it:
-   !`bash -c 'export CLAUDE_PROJECT_DIR="${CLAUDE_PROJECT_DIR}"; export CLAUDE_PLUGIN_ROOT="${CLAUDE_PLUGIN_ROOT}"; source ${CLAUDE_PLUGIN_ROOT}/scripts/state.sh && state_workflow_cancel "$1"' -- [workflow-name]`
+   !`bash -c 'export CLAUDE_PROJECT_DIR="$(pwd)"; export CLAUDE_PLUGIN_ROOT="${CLAUDE_PLUGIN_ROOT}"; source ${CLAUDE_PLUGIN_ROOT}/scripts/state.sh && state_workflow_cancel "$1"' -- [workflow-name]`
 3. Confirm: "Workflow [name] cancelled. Outputs from completed steps are preserved."
 
 ## Subcommand: restart
@@ -94,7 +94,7 @@ If $1 is "restart" and $2 is a workflow name:
 
 If $1 is "status":
 !`bash -c '
-export CLAUDE_PROJECT_DIR="${CLAUDE_PROJECT_DIR}"
+export CLAUDE_PROJECT_DIR="$(pwd)"
 export CLAUDE_PLUGIN_ROOT="${CLAUDE_PLUGIN_ROOT}"
 source ${CLAUDE_PLUGIN_ROOT}/scripts/state.sh
 active=$(state_get_active_workflow)

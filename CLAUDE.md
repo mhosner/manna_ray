@@ -22,8 +22,8 @@ This is a **Claude Code plugin** — not a compiled application. All components 
 ### Commands
 - Commands are markdown files that instruct Claude what to do
 - All commands prefixed with `manna-` to avoid namespace conflicts
-- Use `${CLAUDE_PLUGIN_ROOT}` for all paths to plugin files
-- Use `${CLAUDE_PROJECT_DIR}` for all paths to the PM's project files
+- Use `${CLAUDE_PLUGIN_ROOT}` for all paths to plugin files (substituted by Claude Code in markdown)
+- In bash blocks, use `export CLAUDE_PROJECT_DIR="$(pwd)"` to get the PM's project directory — `CLAUDE_PROJECT_DIR` is only auto-set in hooks, not in command markdown
 - Use `@path` syntax for file references, `!`backtick` for bash execution
 - Commands must validate inputs and handle missing files gracefully
 

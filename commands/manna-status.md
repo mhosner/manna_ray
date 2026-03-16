@@ -8,8 +8,7 @@ You are showing the Manna Ray project dashboard.
 ## Load project state
 
 !`bash -c '
-export CLAUDE_PROJECT_DIR="${CLAUDE_PROJECT_DIR}"
-export CLAUDE_PLUGIN_ROOT="${CLAUDE_PLUGIN_ROOT}"
+export CLAUDE_PROJECT_DIR="$(pwd)"
 source ${CLAUDE_PLUGIN_ROOT}/scripts/state.sh
 source ${CLAUDE_PLUGIN_ROOT}/scripts/context.sh
 

@@ -9,8 +9,7 @@ You are showing Manna Ray run history.
 ## Load history
 
 !`bash -c '
-export CLAUDE_PROJECT_DIR="${CLAUDE_PROJECT_DIR}"
-export CLAUDE_PLUGIN_ROOT="${CLAUDE_PLUGIN_ROOT}"
+export CLAUDE_PROJECT_DIR="$(pwd)"
 
 sf="${CLAUDE_PROJECT_DIR}/.manna-ray/state.json"
 if [ ! -f "$sf" ]; then
