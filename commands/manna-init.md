@@ -50,7 +50,7 @@ export CLAUDE_PROJECT_DIR="$(pwd)"; source ${CLAUDE_PLUGIN_ROOT}/scripts/state.s
 ```
 Replace PROJECT_NAME with the name the user provided in Step 2.
 
-Then update checksums for any existing context files:
+Then update checksums for any existing context files by running this exact command:
 ```bash
 export CLAUDE_PROJECT_DIR="$(pwd)"; source ${CLAUDE_PLUGIN_ROOT}/scripts/state.sh; for f in product.md company.md personas.md competitors.md goals.md; do state_update_context "$f"; done
 ```
@@ -66,10 +66,9 @@ Write this to the project root as `CLAUDE.md`. If a CLAUDE.md already exists, ap
 
 Now guide the user through populating their context files. Start with `context/product.md` — ask them about their product, and help them fill in each section. Move through the files one at a time, but let the user skip any they're not ready to fill.
 
-After each file is populated, update its checksum by running:
+After each file is populated, update its checksum by running this exact command (replace FILENAME with the context file that was just updated, e.g., "product.md"):
 ```bash
 export CLAUDE_PROJECT_DIR="$(pwd)"; source ${CLAUDE_PLUGIN_ROOT}/scripts/state.sh && state_update_context "FILENAME"
 ```
-Replace FILENAME with the context file that was just updated (e.g., "product.md").
 
 Tell the user: "Project initialized! Use /manna-status to see your project dashboard."

@@ -23,7 +23,10 @@ If $1 is "init":
    ```bash
    export CLAUDE_PROJECT_DIR="$(pwd)"; source ${CLAUDE_PLUGIN_ROOT}/scripts/state.sh && [ ! -f ".manna-ray/state.json" ] && state_init "unnamed" || echo "state exists"
    ```
-4. Update checksums for all context files
+4. Update checksums for all context files by running:
+   ```bash
+   export CLAUDE_PROJECT_DIR="$(pwd)"; source ${CLAUDE_PLUGIN_ROOT}/scripts/state.sh; for f in product.md company.md personas.md competitors.md goals.md; do state_update_context "$f"; done
+   ```
 
 ## Subcommand: check
 
@@ -55,11 +58,10 @@ If $1 is "update" and $2 is a filename:
 3. Draft targeted updates to the file — preserve existing content, add/modify sections as needed
 4. Show the proposed changes and ask for approval
 5. After approval, write the updated file
-6. Update the checksum by running:
+6. Update the checksum by running this exact command (replace FILENAME with the actual context filename, e.g., "product.md"):
    ```bash
    export CLAUDE_PROJECT_DIR="$(pwd)"; source ${CLAUDE_PLUGIN_ROOT}/scripts/state.sh && state_update_context "FILENAME"
    ```
-   Replace FILENAME with the actual context filename (e.g., "product.md").
 7. Confirm: "Updated context/$2. Checksum recorded."
 
 If $1 is "update" but $2 is missing, list the available context files and ask which one to update.
