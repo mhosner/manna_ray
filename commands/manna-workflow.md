@@ -63,25 +63,37 @@ fi
 2. If NO_ACTIVE, tell user: "No active workflow. Start one with `/manna-workflow start [name]`."
 3. Otherwise, load the current step's skill definition and execute it.
 4. If there's a previous step output (PREV), load it as additional context for this step.
-5. After skill completes and output is saved, advance the workflow:
-   !`bash -c 'export CLAUDE_PROJECT_DIR="$(pwd)"; export CLAUDE_PLUGIN_ROOT="${CLAUDE_PLUGIN_ROOT}"; source ${CLAUDE_PLUGIN_ROOT}/scripts/state.sh && state_workflow_advance "$1" "$2"' -- [workflow-name] [output-path]`
-6. Update run history too:
-   !`bash -c 'export CLAUDE_PROJECT_DIR="$(pwd)"; export CLAUDE_PLUGIN_ROOT="${CLAUDE_PLUGIN_ROOT}"; source ${CLAUDE_PLUGIN_ROOT}/scripts/state.sh && state_add_run "$1" "$2"' -- [skill-name] [output-path]`
+5. After skill completes and output is saved, advance the workflow by running:
+   ```bash
+   export CLAUDE_PROJECT_DIR="$(pwd)"; export CLAUDE_PLUGIN_ROOT="${CLAUDE_PLUGIN_ROOT}"; source ${CLAUDE_PLUGIN_ROOT}/scripts/state.sh && state_workflow_advance "WORKFLOW_NAME" "OUTPUT_PATH"
+   ```
+   Replace WORKFLOW_NAME with the active workflow name and OUTPUT_PATH with the saved output file path.
+6. Update run history too by running:
+   ```bash
+   export CLAUDE_PROJECT_DIR="$(pwd)"; export CLAUDE_PLUGIN_ROOT="${CLAUDE_PLUGIN_ROOT}"; source ${CLAUDE_PLUGIN_ROOT}/scripts/state.sh && state_add_run "SKILL_NAME" "OUTPUT_PATH"
+   ```
+   Replace SKILL_NAME with the skill that was executed and OUTPUT_PATH with the saved output file path.
 
 ## Subcommand: skip
 
 If $1 is "skip":
 1. Find active workflow
-2. Skip the current step:
-   !`bash -c 'export CLAUDE_PROJECT_DIR="$(pwd)"; export CLAUDE_PLUGIN_ROOT="${CLAUDE_PLUGIN_ROOT}"; source ${CLAUDE_PLUGIN_ROOT}/scripts/state.sh && state_workflow_skip "$1"' -- [workflow-name]`
+2. Skip the current step by running:
+   ```bash
+   export CLAUDE_PROJECT_DIR="$(pwd)"; export CLAUDE_PLUGIN_ROOT="${CLAUDE_PLUGIN_ROOT}"; source ${CLAUDE_PLUGIN_ROOT}/scripts/state.sh && state_workflow_skip "WORKFLOW_NAME"
+   ```
+   Replace WORKFLOW_NAME with the active workflow name from step 1.
 3. Show what was skipped and what's next.
 
 ## Subcommand: cancel
 
 If $1 is "cancel":
 1. Find active workflow
-2. Cancel it:
-   !`bash -c 'export CLAUDE_PROJECT_DIR="$(pwd)"; export CLAUDE_PLUGIN_ROOT="${CLAUDE_PLUGIN_ROOT}"; source ${CLAUDE_PLUGIN_ROOT}/scripts/state.sh && state_workflow_cancel "$1"' -- [workflow-name]`
+2. Cancel it by running:
+   ```bash
+   export CLAUDE_PROJECT_DIR="$(pwd)"; export CLAUDE_PLUGIN_ROOT="${CLAUDE_PLUGIN_ROOT}"; source ${CLAUDE_PLUGIN_ROOT}/scripts/state.sh && state_workflow_cancel "WORKFLOW_NAME"
+   ```
+   Replace WORKFLOW_NAME with the active workflow name from step 1.
 3. Confirm: "Workflow [name] cancelled. Outputs from completed steps are preserved."
 
 ## Subcommand: restart

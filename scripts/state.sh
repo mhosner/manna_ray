@@ -110,8 +110,17 @@ state_workflow_advance() {
   local sf
   sf=$(_state_file)
 
+  if [ -z "$workflow_name" ]; then
+    echo "Error: workflow name required" >&2
+    return 1
+  fi
+
   local current_step
-  current_step=$(jq -r ".workflows[\"$workflow_name\"].currentStep" "$sf")
+  current_step=$(jq -r ".workflows[\"$workflow_name\"].currentStep // empty" "$sf")
+  if [ -z "$current_step" ]; then
+    echo "Error: no active workflow '$workflow_name'" >&2
+    return 1
+  fi
 
   jq --arg name "$workflow_name" --arg output "$output_path" --argjson step "$current_step" \
     '.workflows[$name].steps[$step].status = "completed" |
@@ -135,8 +144,17 @@ state_workflow_skip() {
   local sf
   sf=$(_state_file)
 
+  if [ -z "$workflow_name" ]; then
+    echo "Error: workflow name required" >&2
+    return 1
+  fi
+
   local current_step
-  current_step=$(jq -r ".workflows[\"$workflow_name\"].currentStep" "$sf")
+  current_step=$(jq -r ".workflows[\"$workflow_name\"].currentStep // empty" "$sf")
+  if [ -z "$current_step" ]; then
+    echo "Error: no active workflow '$workflow_name'" >&2
+    return 1
+  fi
 
   jq --arg name "$workflow_name" --argjson step "$current_step" \
     '.workflows[$name].steps[$step].status = "skipped" |
@@ -149,6 +167,11 @@ state_workflow_cancel() {
   local sf
   sf=$(_state_file)
 
+  if [ -z "$workflow_name" ]; then
+    echo "Error: workflow name required" >&2
+    return 1
+  fi
+
   jq --arg name "$workflow_name" \
     '.workflows[$name].status = "cancelled"' \
     "$sf" > "${sf}.tmp" && mv "${sf}.tmp" "$sf"
@@ -157,5 +180,5 @@ state_workflow_cancel() {
 state_get_active_workflow() {
   local sf
   sf=$(_state_file)
-  jq -r '[.workflows | to_entries[] | select(.value.status == "in_progress")] | first // empty | .key' "$sf" 2>/dev/null || echo ""
+  jq -r '[.workflows | to_entries[] | select(.value.status == "in_progress")] | .[0].key // empty' "$sf" 2>/dev/null || echo ""
 }
