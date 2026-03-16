@@ -1,0 +1,106 @@
+<h2>Manna Ray — Context Manager</h2>
+<p class="subtitle">Section 3: How context files are initialized, loaded, validated, and kept fresh</p>
+
+<div class="mockup">
+  <div class="mockup-header">Context File Lifecycle</div>
+  <div class="mockup-body" style="padding: 2rem; font-family: monospace; font-size: 0.8rem; line-height: 1.6;">
+    <pre style="color: #e0e0e0; margin: 0;">
+/manna context init
+━━━━━━━━━━━━━━━━━━━
+  Scaffolds context/ directory with template files:
+
+  context/
+  ├─ product.md      ← roadmap, metrics, known issues, positioning
+  ├─ company.md      ← strategic priorities, team structure, biz model
+  ├─ personas.md     ← user archetypes, JTBD, pain points
+  ├─ competitors.md  ← competitive intel, win/loss, pricing
+  └─ goals.md        ← quarterly/annual OKRs, success metrics
+
+  Each file gets a structured template with sections to fill.
+  Claude guides the PM through populating them interactively.
+
+
+Before each skill runs:
+━━━━━━━━━━━━━━━━━━━━━━
+  1. DEPENDENCY CHECK
+     Skill declares which context files it needs
+     e.g., prd-generator requires: [product.md, personas.md, goals.md]
+
+     Missing?  → "product.md not found. Run /manna context init
+                  or create it manually."
+     Empty?    → "personas.md exists but has no content.
+                  Want to populate it now?"
+
+  2. STALENESS CHECK
+     State store tracks last-modified checksums per context file.
+     If a file hasn't changed in 30+ days:
+
+     "⚠ competitors.md hasn't been updated in 47 days.
+      Want to review it before running landscape-mapper?"
+
+  3. CONTEXT INJECTION
+     Plugin reads required context files and prepends them to
+     the skill prompt:
+
+     ┌─────────────────────────────────────┐
+     │  ## Current Context                 │
+     │  ### Product (from product.md)      │
+     │  [contents]                         │
+     │  ### Personas (from personas.md)    │
+     │  [contents]                         │
+     │                                     │
+     │  ## Skill Instructions              │
+     │  [SKILL.md contents]               │
+     │                                     │
+     │  ## User Input                      │
+     │  [what the PM typed]               │
+     └─────────────────────────────────────┘
+
+
+After skill completes:
+━━━━━━━━━━━━━━━━━━━━━━
+  Skills that produce new insights trigger context update prompts:
+
+  SKILL                        SUGGESTS UPDATING
+  ─────────────────────────    ──────────────────
+  user-interview-analyzer   →  personas.md
+  jtbd-extractor            →  personas.md
+  competitive-profile       →  competitors.md
+  landscape-mapper          →  competitors.md
+  north-star-finder         →  goals.md, product.md
+  ab-test-analyzer          →  product.md
+  funnel-analyzer           →  product.md
+  quarterly-planning        →  goals.md
+  pricing-strategy          →  product.md, competitors.md
+  positioning-statement     →  product.md
+
+  The plugin asks:
+  "This analysis produced new insights about [topic].
+   Want to update [file] with these findings?"
+
+  If yes → Claude drafts the update, PM approves,
+           state store records new checksum.</pre>
+  </div>
+</div>
+
+<div class="section" style="margin-top: 1.5rem;">
+  <h3>Design Principles</h3>
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+    <div style="padding: 1rem; border: 1px solid rgba(255,255,255,0.1); border-radius: 8px;">
+      <h4 style="color: #64b5f6;">Declare, don't discover</h4>
+      <p>Each skill's .md file declares its context dependencies in frontmatter. No guessing, no runtime scanning. Missing a dependency? Fail fast with a clear message.</p>
+    </div>
+    <div style="padding: 1rem; border: 1px solid rgba(255,255,255,0.1); border-radius: 8px;">
+      <h4 style="color: #81c784;">Suggest, don't force</h4>
+      <p>Staleness warnings and update prompts are suggestions. The PM can skip them. Context files are the PM's responsibility — the plugin just makes maintenance easier.</p>
+    </div>
+    <div style="padding: 1rem; border: 1px solid rgba(255,255,255,0.1); border-radius: 8px;">
+      <h4 style="color: #ffb74d;">Outputs feed context</h4>
+      <p>The feedback loop isn't just between workflows — it's between skill outputs and context files. Every insight should have a path back into the shared knowledge base.</p>
+    </div>
+    <div style="padding: 1rem; border: 1px solid rgba(255,255,255,0.1); border-radius: 8px;">
+      <h4 style="color: #ce93d8;">Incremental population</h4>
+      <p>Context files don't need to be complete on day one. Skills work with what exists and flag what's missing. The knowledge base grows organically as you use the system.</p>
+    </div>
+  </div>
+</div>

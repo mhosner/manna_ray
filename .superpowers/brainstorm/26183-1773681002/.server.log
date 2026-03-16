@@ -1,0 +1,8 @@
+{"type":"server-started","port":62580,"host":"127.0.0.1","url_host":"localhost","url":"http://localhost:62580","screen_dir":"/home/matt/coding/manna_ray/.superpowers/brainstorm/26183-1773681002"}
+{"type":"screen-added","file":"/home/matt/coding/manna_ray/.superpowers/brainstorm/26183-1773681002/approaches.html"}
+{"type":"screen-added","file":"/home/matt/coding/manna_ray/.superpowers/brainstorm/26183-1773681002/architecture.html"}
+{"type":"screen-added","file":"/home/matt/coding/manna_ray/.superpowers/brainstorm/26183-1773681002/workflows.html"}
+{"type":"screen-added","file":"/home/matt/coding/manna_ray/.superpowers/brainstorm/26183-1773681002/context-manager.html"}
+{"type":"screen-added","file":"/home/matt/coding/manna_ray/.superpowers/brainstorm/26183-1773681002/state-and-commands.html"}
+{"type":"screen-added","file":"/home/matt/coding/manna_ray/.superpowers/brainstorm/26183-1773681002/project-structure.html"}
+{"type":"server-stopped","reason":"idle timeout"}

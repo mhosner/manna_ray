@@ -1,0 +1,82 @@
+<h2>Manna Ray — System Architecture</h2>
+<p class="subtitle">Section 1: High-level components and how they connect</p>
+
+<div class="mockup">
+  <div class="mockup-header">Architecture Overview</div>
+  <div class="mockup-body" style="padding: 2rem; font-family: monospace; font-size: 0.85rem; line-height: 1.8;">
+    <pre style="color: #e0e0e0; margin: 0;">
+┌─────────────────────────────────────────────────────────┐
+│                    Claude Code Session                   │
+│                                                         │
+│  User types: /manna discovery interview-analyze         │
+│              /manna workflow start idea-to-sprint        │
+│              /manna status                               │
+│              /manna context init                         │
+│                                                         │
+├─────────────────────────────────────────────────────────┤
+│                   Manna Ray Plugin                       │
+│                                                         │
+│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐  │
+│  │   Command     │  │   Context    │  │   Pipeline   │  │
+│  │   Router      │  │   Manager    │  │   Runner     │  │
+│  │              │  │              │  │              │  │
+│  │ Parses slash  │  │ Init/load/   │  │ Sequences    │  │
+│  │ commands,     │  │ validate     │  │ skills,      │  │
+│  │ routes to     │  │ context      │  │ checks deps, │  │
+│  │ skills or     │  │ files,       │  │ advances     │  │
+│  │ system cmds   │  │ injects into │  │ workflow     │  │
+│  │              │  │ prompts      │  │ state        │  │
+│  └──────┬───────┘  └──────┬───────┘  └──────┬───────┘  │
+│         │                 │                 │           │
+│  ┌──────┴─────────────────┴─────────────────┴───────┐  │
+│  │                  Skill Registry                    │  │
+│  │                                                    │  │
+│  │  Loads .md skill files → registers slash commands  │  │
+│  │  Resolves: skill name → prompt + context + output  │  │
+│  └──────────────────────┬────────────────────────────┘  │
+│                         │                               │
+│  ┌──────────────────────┴────────────────────────────┐  │
+│  │                  State Store                       │  │
+│  │                                                    │  │
+│  │  .manna-ray/state.json                            │  │
+│  │  - Active workflows & current step                │  │
+│  │  - Skill run history (what ran, when, output path)│  │
+│  │  - Context file checksums (staleness detection)   │  │
+│  │  - Dependency graph (what needs what)             │  │
+│  └────────────────────────────────────────────────────┘  │
+│                                                         │
+├─────────────────────────────────────────────────────────┤
+│                    Project Directory                     │
+│                                                         │
+│  context/          skills/           outputs/            │
+│  ├─ product.md     ├─ prd-gen/       ├─ discovery/      │
+│  ├─ company.md     │  └─ SKILL.md    ├─ strategy/       │
+│  ├─ personas.md    ├─ roadmap/       ├─ specs/          │
+│  ├─ competitors.md │  └─ SKILL.md    ├─ analytics/      │
+│  └─ goals.md       └─ ...           └─ launch/         │
+│                                                         │
+└─────────────────────────────────────────────────────────┘</pre>
+  </div>
+</div>
+
+<div class="section" style="margin-top: 1.5rem;">
+  <h3>Four Core Components</h3>
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+    <div style="padding: 1rem; border: 1px solid rgba(255,255,255,0.1); border-radius: 8px;">
+      <h4 style="color: #64b5f6;">Command Router</h4>
+      <p>Single entry point: <code>/manna</code>. Routes to skill execution, workflow management, context ops, or status queries.</p>
+    </div>
+    <div style="padding: 1rem; border: 1px solid rgba(255,255,255,0.1); border-radius: 8px;">
+      <h4 style="color: #81c784;">Context Manager</h4>
+      <p>Initializes project with scaffolded context files. Loads relevant context before each skill. Tracks staleness. Prompts for updates after skills produce new insights.</p>
+    </div>
+    <div style="padding: 1rem; border: 1px solid rgba(255,255,255,0.1); border-radius: 8px;">
+      <h4 style="color: #ffb74d;">Pipeline Runner</h4>
+      <p>Defines workflows as ordered skill sequences. Validates prerequisites before each step. Tracks progress. Handles the feedback loop (post-launch → discovery).</p>
+    </div>
+    <div style="padding: 1rem; border: 1px solid rgba(255,255,255,0.1); border-radius: 8px;">
+      <h4 style="color: #ce93d8;">State Store</h4>
+      <p>JSON file tracking active workflows, run history, output locations, and context checksums. Enables <code>/manna status</code> and dependency validation.</p>
+    </div>
+  </div>
+</div>

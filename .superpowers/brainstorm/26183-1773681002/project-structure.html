@@ -1,0 +1,143 @@
+<h2>Manna Ray — Project Structure & Plugin Packaging</h2>
+<p class="subtitle">Section 5: File layout, skill registration, and what ships as the plugin</p>
+
+<div class="mockup">
+  <div class="mockup-header">Plugin Source Structure (what we build)</div>
+  <div class="mockup-body" style="padding: 1.5rem; font-family: monospace; font-size: 0.8rem; line-height: 1.6;">
+    <pre style="color: #e0e0e0; margin: 0;">
+manna-ray/
+├─ package.json                    ← npm package, "manna-ray" CLI entry
+├─ tsconfig.json
+├─ CLAUDE.md                       ← project best practices for contributors
+│
+├─ src/
+│  ├─ index.ts                     ← plugin entry point, registers with Claude Code
+│  ├─ commands/
+│  │  ├─ router.ts                 ← parses /manna [subcommand] and dispatches
+│  │  ├─ init.ts                   ← /manna init — scaffold a new PM project
+│  │  ├─ context.ts                ← /manna context [init|check|update]
+│  │  ├─ workflow.ts               ← /manna workflow [start|next|skip|status|list]
+│  │  ├─ status.ts                 ← /manna status — dashboard view
+│  │  └─ history.ts                ← /manna history, /manna outputs
+│  │
+│  ├─ core/
+│  │  ├─ context-manager.ts        ← load, validate, inject context files
+│  │  ├─ pipeline-runner.ts        ← workflow sequencing, dependency checks
+│  │  ├─ state-store.ts            ← read/write .manna-ray/state.json
+│  │  └─ skill-registry.ts         ← discover & register skill .md files
+│  │
+│  ├─ skills/
+│  │  ├─ skill-loader.ts           ← parse SKILL.md frontmatter + body
+│  │  └─ prompt-builder.ts         ← assemble: context + skill prompt + user input
+│  │
+│  └─ types/
+│     ├─ skill.ts                  ← SkillDefinition, SkillMeta interfaces
+│     ├─ workflow.ts               ← WorkflowDefinition, WorkflowStep
+│     ├─ state.ts                  ← ProjectState, ContextHealth, RunRecord
+│     └─ context.ts                ← ContextFile, ContextStatus
+│
+├─ workflows/
+│  ├─ zero-to-one.yaml             ← workflow A definition
+│  ├─ quarterly-planning.yaml      ← workflow B definition
+│  ├─ idea-to-sprint.yaml          ← workflow C definition
+│  ├─ go-to-market.yaml            ← workflow D definition
+│  └─ feedback-loop.yaml           ← workflow E definition
+│
+├─ skills/                         ← existing SKILL.md files (28 of them)
+│  ├─ prd-generator/
+│  │  └─ SKILL.md
+│  ├─ roadmap-builder/
+│  │  └─ SKILL.md
+│  └─ ...
+│
+├─ templates/
+│  ├─ context/
+│  │  ├─ product.md                ← template for context/product.md
+│  │  ├─ company.md
+│  │  ├─ personas.md
+│  │  ├─ competitors.md
+│  │  └─ goals.md
+│  └─ claude-md/
+│     └─ project.md                ← CLAUDE.md template for PM projects
+│
+└─ tests/
+   ├─ context-manager.test.ts
+   ├─ pipeline-runner.test.ts
+   ├─ state-store.test.ts
+   ├─ skill-loader.test.ts
+   └─ prompt-builder.test.ts</pre>
+  </div>
+</div>
+
+<div class="mockup" style="margin-top: 1.5rem;">
+  <div class="mockup-header">What a PM's project looks like after /manna init</div>
+  <div class="mockup-body" style="padding: 1.5rem; font-family: monospace; font-size: 0.8rem; line-height: 1.6;">
+    <pre style="color: #e0e0e0; margin: 0;">
+my-product/
+├─ CLAUDE.md                       ← generated, tells Claude about Manna Ray context
+├─ .manna-ray/
+│  └─ state.json                   ← workflow state, run history, checksums
+│
+├─ context/
+│  ├─ product.md                   ← scaffolded from template, PM fills in
+│  ├─ company.md
+│  ├─ personas.md
+│  ├─ competitors.md
+│  └─ goals.md
+│
+├─ outputs/
+│  ├─ discovery/                   ← interview snapshots, JTBD, synthesis
+│  ├─ strategy/                    ← roadmaps, positioning, competitive analysis
+│  ├─ specs/                       ← PRDs, tech specs, user stories, plans
+│  ├─ analytics/                   ← A/B tests, funnels, metrics, north star
+│  └─ launch/                      ← sales kits, stakeholder sims, checklists
+│
+└─ research/                       ← raw inputs: transcripts, survey data, etc.
+   └─ (user adds files here)</pre>
+  </div>
+</div>
+
+<div class="section" style="margin-top: 1.5rem;">
+  <h3>Workflow Definition Format</h3>
+  <div class="mockup">
+    <div class="mockup-header">workflows/idea-to-sprint.yaml</div>
+    <div class="mockup-body" style="padding: 1rem; font-family: monospace; font-size: 0.8rem; line-height: 1.5;">
+      <pre style="color: #e0e0e0; margin: 0;">
+name: idea-to-sprint
+description: Take an approved roadmap initiative to sprint-ready tickets
+prerequisite_outputs:
+  - strategy/outputs/roadmap-*.md    # must have a roadmap first
+
+steps:
+  - skill: prioritization-engine
+    required_context: [product.md, goals.md]
+    output_dir: strategy/outputs
+    feeds_into: prd-generator         # output becomes input for next
+
+  - skill: prd-generator
+    required_context: [product.md, personas.md, goals.md]
+    output_dir: specs/outputs
+    feeds_into: ab-test-designer
+    suggests_update: [product.md]     # may produce new product insights
+
+  - skill: ab-test-designer
+    required_context: [product.md]
+    output_dir: analytics/outputs
+    feeds_into: technical-spec-writer
+
+  - skill: technical-spec-writer
+    required_context: [product.md]
+    output_dir: specs/outputs
+    feeds_into: user-story-writer
+
+  - skill: user-story-writer
+    required_context: [personas.md]
+    output_dir: specs/outputs
+    feeds_into: launch-checklist-generator
+
+  - skill: launch-checklist-generator
+    required_context: [product.md]
+    output_dir: launch/outputs</pre>
+    </div>
+  </div>
+</div>
