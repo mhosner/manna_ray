@@ -2,7 +2,7 @@
 
 ## Project Overview
 
-Manna Ray is a Claude Code plugin that serves as a Product Management Operating System. It orchestrates 28 PM skills across 5 workflows, managing context files, workflow state, and skill chaining.
+Manna Ray is a Claude Code plugin that serves as a Product Management Operating System. It orchestrates 31 PM skills across 5 workflows, managing context files, workflow state, and skill chaining.
 
 ## Architecture
 
@@ -29,7 +29,8 @@ This is a **Claude Code plugin** — not a compiled application. All components 
 
 ### Skills
 - Skills are prompt-driven `.md` files — the PM methodology lives here
-- Each skill has YAML frontmatter with: `name`, `description`, `mode`, `required_context`, `output_dir`, `output_prefix`, `suggests_update`
+- Each skill has YAML frontmatter with: `name`, `description`, and custom fields under `metadata:` (`mode`, `required_context`, `output_dir`, `output_prefix`, `suggests_update`)
+- Custom fields MUST go under `metadata:` — Claude Code only supports `name`, `description`, `argument-hint`, `compatibility`, `disable-model-invocation`, `license`, `metadata`, `user-invocable` as top-level frontmatter attributes
 - Skills should NOT be modified for orchestration logic — keep them focused on PM methodology
 - The orchestration layer (commands/scripts) handles context injection and state tracking
 
