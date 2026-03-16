@@ -1,6 +1,13 @@
 ---
 name: technical-spec-writer
 description: 'Write technical specifications with architecture, data models, and API designs. Use when: write technical spec, technical spec, tech spec, engineering spec.'
+metadata:
+  mode: specs
+  required_context:
+    - product.md
+  output_dir: outputs/specs
+  output_prefix: tech-spec
+  suggests_update: []
 ---
 
 # Technical Spec Writer

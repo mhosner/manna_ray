@@ -1,6 +1,14 @@
 ---
 name: prioritization-engine
 description: 'Defend your roadmap with scoring frameworks that show stakeholders exactly why features ranked the way they did. Use when: prioritize features, rice scoring, ice scoring, feature prioritization, rank features, what should we build.'
+metadata:
+  mode: priority
+  required_context:
+    - product.md
+    - goals.md
+  output_dir: outputs/strategy
+  output_prefix: prioritization
+  suggests_update: []
 ---
 
 # Prioritization Engine

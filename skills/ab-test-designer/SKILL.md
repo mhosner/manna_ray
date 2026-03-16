@@ -1,6 +1,13 @@
 ---
 name: ab-test-designer
 description: 'Design statistically sound experiments with clear hypotheses and sample size calculations. Use when: design ab test, create experiment, ab test plan, hypothesis testing.'
+metadata:
+  mode: data
+  required_context:
+    - product.md
+  output_dir: outputs/analytics
+  output_prefix: ab-test-design
+  suggests_update: []
 ---
 
 # A/B Test Designer

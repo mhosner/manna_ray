@@ -1,6 +1,13 @@
 ---
 name: launch-checklist-generator
 description: 'Generate comprehensive launch checklists customized to your feature tier. Use when: launch checklist, release checklist, go-live checklist, launch readiness.'
+metadata:
+  mode: specs
+  required_context:
+    - product.md
+  output_dir: outputs/launch
+  output_prefix: launch-checklist
+  suggests_update: []
 ---
 
 # Launch Checklist Generator

@@ -1,6 +1,16 @@
 ---
 name: prd-generator
 description: 'Transform messy ideas into structured PRDs that get stakeholder alignment before engineering starts building. Use when: write prd, product requirements, requirements document, feature spec.'
+metadata:
+  mode: specs
+  required_context:
+    - product.md
+    - personas.md
+    - goals.md
+  output_dir: outputs/specs
+  output_prefix: prd
+  suggests_update:
+    - product.md
 ---
 
 # PRD Generator

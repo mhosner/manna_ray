@@ -1,6 +1,13 @@
 ---
 name: user-story-writer
 description: 'Turn features into sprint-ready stories that are Independent, Negotiable, Valuable, Estimable, Small, and Testable. Use when: write user stories, user story, acceptance criteria, story points.'
+metadata:
+  mode: specs
+  required_context:
+    - personas.md
+  output_dir: outputs/specs
+  output_prefix: user-stories
+  suggests_update: []
 ---
 
 # User Story Writer
