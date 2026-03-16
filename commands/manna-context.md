@@ -17,7 +17,7 @@ If $1 is "init":
    - @${CLAUDE_PLUGIN_ROOT}/templates/context/competitors.md
    - @${CLAUDE_PLUGIN_ROOT}/templates/context/goals.md
 3. Initialize state if .manna-ray/state.json doesn't exist:
-   !`bash -c 'source ${CLAUDE_PLUGIN_ROOT}/scripts/state.sh && [ ! -f "${CLAUDE_PROJECT_DIR}/.manna-ray/state.json" ] && state_init "unnamed" || echo "state exists"'`
+   !`bash -c 'export CLAUDE_PROJECT_DIR="${CLAUDE_PROJECT_DIR}"; export CLAUDE_PLUGIN_ROOT="${CLAUDE_PLUGIN_ROOT}"; source ${CLAUDE_PLUGIN_ROOT}/scripts/state.sh && [ ! -f "${CLAUDE_PROJECT_DIR}/.manna-ray/state.json" ] && state_init "unnamed" || echo "state exists"'`
 4. Update checksums for all context files
 
 ## Subcommand: check
@@ -25,6 +25,8 @@ If $1 is "init":
 If $1 is "check":
 Show detailed context file health by running:
 !`bash -c '
+export CLAUDE_PROJECT_DIR="${CLAUDE_PROJECT_DIR}"
+export CLAUDE_PLUGIN_ROOT="${CLAUDE_PLUGIN_ROOT}"
 source ${CLAUDE_PLUGIN_ROOT}/scripts/state.sh
 source ${CLAUDE_PLUGIN_ROOT}/scripts/context.sh
 echo "=== Context File Health ==="
@@ -51,7 +53,7 @@ If $1 is "update" and $2 is a filename:
 4. Show the proposed changes and ask for approval
 5. After approval, write the updated file
 6. Update the checksum:
-   !`bash -c 'source ${CLAUDE_PLUGIN_ROOT}/scripts/state.sh && state_update_context "$1"' -- $2`
+   !`bash -c 'export CLAUDE_PROJECT_DIR="${CLAUDE_PROJECT_DIR}"; export CLAUDE_PLUGIN_ROOT="${CLAUDE_PLUGIN_ROOT}"; source ${CLAUDE_PLUGIN_ROOT}/scripts/state.sh && state_update_context "$1"' -- $2`
 7. Confirm: "Updated context/$2. Checksum recorded."
 
 If $1 is "update" but $2 is missing, list the available context files and ask which one to update.
