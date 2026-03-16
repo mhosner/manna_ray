@@ -1,0 +1,20 @@
+# Claude Code local settings
+.claude/
+
+# Superpowers brainstorm artifacts (HTML mockups, server logs)
+.superpowers/
+
+# Design and implementation docs (internal planning)
+docs/superpowers/
+
+# Test project (scratch/demo data)
+test-pm-project/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Editor files
+*.swp
+*.swo
+*~
