@@ -1,0 +1,35 @@
+name: idea-to-sprint
+description: Take an approved roadmap initiative to sprint-ready tickets
+prerequisite_outputs:
+  - outputs/strategy/roadmap-*.md
+
+steps:
+  - skill: prioritization-engine
+    required_context: [product.md, goals.md]
+    output_dir: outputs/strategy
+    feeds_into: prd-generator
+
+  - skill: prd-generator
+    required_context: [product.md, personas.md, goals.md]
+    output_dir: outputs/specs
+    feeds_into: ab-test-designer
+    suggests_update: [product.md]
+
+  - skill: ab-test-designer
+    required_context: [product.md]
+    output_dir: outputs/analytics
+    feeds_into: technical-spec-writer
+
+  - skill: technical-spec-writer
+    required_context: [product.md]
+    output_dir: outputs/specs
+    feeds_into: user-story-writer
+
+  - skill: user-story-writer
+    required_context: [personas.md]
+    output_dir: outputs/specs
+    feeds_into: launch-checklist-generator
+
+  - skill: launch-checklist-generator
+    required_context: [product.md]
+    output_dir: outputs/launch

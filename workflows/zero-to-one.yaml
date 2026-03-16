@@ -1,0 +1,30 @@
+name: zero-to-one
+description: Take a vague market opportunity and turn it into a validated, testable solution
+
+steps:
+  - skill: user-interview-analyzer
+    required_context: [personas.md]
+    output_dir: outputs/discovery
+    feeds_into: research-synthesis-engine
+
+  - skill: research-synthesis-engine
+    required_context: [product.md, personas.md]
+    output_dir: outputs/discovery
+    feeds_into: jtbd-extractor
+    suggests_update: [personas.md]
+
+  - skill: jtbd-extractor
+    required_context: [personas.md]
+    output_dir: outputs/discovery
+    feeds_into: user-journey-mapper
+    suggests_update: [personas.md]
+
+  - skill: user-journey-mapper
+    required_context: [personas.md, product.md]
+    output_dir: outputs/discovery
+    feeds_into: opportunity-solution-tree
+
+  - skill: opportunity-solution-tree
+    required_context: [product.md, personas.md, goals.md]
+    output_dir: outputs/discovery
+    suggests_update: [product.md]

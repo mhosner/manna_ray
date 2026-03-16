@@ -1,0 +1,42 @@
+name: quarterly-planning
+description: Align the company on what to build next quarter based on market realities and business constraints
+
+steps:
+  - skill: north-star-finder
+    required_context: [product.md, goals.md]
+    output_dir: outputs/analytics
+    feeds_into: landscape-mapper
+    suggests_update: [goals.md, product.md]
+
+  - skill: landscape-mapper
+    required_context: [competitors.md, product.md]
+    output_dir: outputs/strategy
+    feeds_into: competitive-profile-builder
+    suggests_update: [competitors.md]
+
+  - skill: competitive-profile-builder
+    required_context: [competitors.md, product.md]
+    output_dir: outputs/strategy
+    feeds_into: tech-debt-evaluator
+    suggests_update: [competitors.md]
+
+  - skill: tech-debt-evaluator
+    required_context: [product.md]
+    output_dir: outputs/strategy
+    feeds_into: cogs-analyzer
+
+  - skill: cogs-analyzer
+    required_context: [company.md, product.md]
+    output_dir: outputs/analytics
+    feeds_into: quarterly-planning-template
+
+  - skill: quarterly-planning-template
+    required_context: [product.md, company.md, goals.md]
+    output_dir: outputs/strategy
+    feeds_into: roadmap-builder
+    suggests_update: [goals.md]
+
+  - skill: roadmap-builder
+    required_context: [product.md, goals.md]
+    output_dir: outputs/strategy
+    suggests_update: [product.md]

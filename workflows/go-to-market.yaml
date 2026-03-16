@@ -1,0 +1,34 @@
+name: go-to-market
+description: Ensure a new feature or product is positioned and priced to win in the market
+
+steps:
+  - skill: swot-analysis-generator
+    required_context: [product.md, competitors.md]
+    output_dir: outputs/strategy
+    feeds_into: positioning-statement-generator
+
+  - skill: positioning-statement-generator
+    required_context: [product.md, competitors.md, personas.md]
+    output_dir: outputs/strategy
+    feeds_into: pricing-strategy-analyzer
+    suggests_update: [product.md]
+
+  - skill: pricing-strategy-analyzer
+    required_context: [product.md, competitors.md, company.md]
+    output_dir: outputs/strategy
+    feeds_into: sales-enablement-kit
+    suggests_update: [product.md, competitors.md]
+
+  - skill: sales-enablement-kit
+    required_context: [product.md, competitors.md, personas.md]
+    output_dir: outputs/launch
+    feeds_into: weekly-plan
+
+  - skill: weekly-plan
+    required_context: [goals.md]
+    output_dir: outputs/productivity
+    feeds_into: daily-plan
+
+  - skill: daily-plan
+    required_context: [goals.md]
+    output_dir: outputs/productivity

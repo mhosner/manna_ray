@@ -1,0 +1,31 @@
+name: feedback-loop
+description: Analyze post-launch data and feed learnings back into the system
+
+steps:
+  - skill: ab-test-analyzer
+    required_context: [product.md]
+    output_dir: outputs/analytics
+    feeds_into: funnel-analyzer
+    suggests_update: [product.md]
+
+  - skill: funnel-analyzer
+    required_context: [product.md]
+    output_dir: outputs/analytics
+    feeds_into: metric-framework-builder
+    suggests_update: [product.md]
+
+  - skill: metric-framework-builder
+    required_context: [product.md, goals.md]
+    output_dir: outputs/analytics
+    feeds_into: research-synthesis-engine
+
+  - skill: research-synthesis-engine
+    required_context: [product.md, personas.md]
+    output_dir: outputs/discovery
+    feeds_into: backlog-prioritizer
+    suggests_update: [personas.md]
+
+  - skill: backlog-prioritizer
+    required_context: [product.md, goals.md]
+    output_dir: outputs/strategy
+    suggests_update: [product.md, goals.md]
